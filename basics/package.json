@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "string-reverse": "nodemon ./string-reverse",
-    "convert-csv": "nodemon ./convert-csv"
+    "task1": "nodemon ./string-reverse",
+    "task2": "nodemon ./convert-csv"
   },
   "keywords": [],
   "author": "",
