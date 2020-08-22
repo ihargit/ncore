@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "lint": "eslint **/*.js",
-    "start": "nodemon --exec babel-node app.js"
+    "dev": "cross-env NODE_ENV=dev nodemon --exec babel-node app.js",
+    "start": "cross-env NODE_ENV=prod nodemon --exec babel-node app.js"
   },
   "keywords": [],
   "author": "",
@@ -20,8 +21,10 @@
   },
   "dependencies": {
     "cookie-parser": "^1.4.5",
+    "cross-env": "^7.0.2",
     "express": "^4.17.1",
     "http-errors": "^1.8.0",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "uuid": "^8.3.0"
   }
 }
