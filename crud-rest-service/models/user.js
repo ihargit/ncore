@@ -1,34 +1,51 @@
+import schema from './userSchema';
+
 const database = {
     users: {}
 };
-// add validation ajv or joi
 
 class UserModel {
     constructor(dataBase) {
         this.users = dataBase.users;
+    }
+
+    async reportInvalidData(id, login, password, age) {
+        try {
+            await schema.validateAsync({ id, login, password, age });
+        } catch (err) {
+            return err;
+        }
     }
     async findById(userId) {
         const userData =  await this.users[userId];
         return userData.isDeleted ? null : userData;
     }
 
-    async createUser(userId, login, password, age, isDeleted) {
-        this.users[userId] = {
-            id: userId,
+    async createUser(id, login, password, age, isDeleted) {
+        const validationError = await this.reportInvalidData(...arguments);
+        if (validationError) {
+            return validationError;
+        }
+        this.users[id] = {
+            id,
             login,
             password,
             age,
             isDeleted
         };
-        return await this.users[userId];
+        return await this.users[id];
     }
 
-    async updateUser(userId, login, password, age) {
-        if (!this.users[userId] || this.users[userId].isDeleted === true) {
+    async updateUser(id, login, password, age) {
+        const validationError = await this.reportInvalidData(...arguments);
+        if (validationError) {
+            return validationError;
+        }
+        if (!this.users[id] || this.users[id].isDeleted === true) {
             return null;
         }
-        Object.assign(this.users[userId], { login, password, age });
-        return await this.users[userId];
+        Object.assign(this.users[id], { login, password, age });
+        return await this.users[id];
     }
 
     async getUsers() {

@@ -25,6 +25,9 @@ router.route('/')
     })
     .post(async (req, res, next) => {
         const userData = await userService.createUser(req.body);
+        if (userData instanceof Error && userData.name === 'ValidationError') {
+            return next(createError(400, userData.message));
+        }
         return userData ? res.json(userData) : next();
     });
 
@@ -37,6 +40,9 @@ router.route('/:id')
     })
     .put(async (req, res, next) => {
         const userData = await userService.updateUser(req.params.id, req.body);
+        if (userData instanceof Error && userData.name === 'ValidationError') {
+            return next(createError(400, userData.message));
+        }
         return userData
             ? res.json(userData)
             : next(createError(404, `User with id ${req.params.id} not found`));
