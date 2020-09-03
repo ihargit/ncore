@@ -1,0 +1,14 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:13-alpine
+    volumes:
+      - ncore-postgres-data:/var/lib/postgres
+    environment:
+      POSTGRES_USER: xxxx
+      POSTGRES_PASSWORD: xxxx
+      POSTGRES_DB: xxxx
+
+volumes:
+  ncore-postgres-data:
