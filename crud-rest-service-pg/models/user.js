@@ -59,7 +59,7 @@ class UserModel {
         if (validationError) {
             return validationError;
         }
-        return await this.user.create({
+        await this.user.create({
             id,
             login,
             password,
