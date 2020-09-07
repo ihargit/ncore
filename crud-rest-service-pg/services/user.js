@@ -14,8 +14,7 @@ export default class UserService {
 
     async createUser({ login, password, age }) {
         const id = uuidv4();
-        const isDeleted = false;
-        return await this.userModel.createUser(id, login, password, age, isDeleted);
+        return await this.userModel.createUser(id, login, password, age);
     }
 
     async updateUser(id, { login, password, age }) {

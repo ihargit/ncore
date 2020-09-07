@@ -3,8 +3,10 @@ CREATE TABLE Users (
    login    VARCHAR(1000) NOT NULL,
    password     VARCHAR(1000) NOT NULL,
    age NUMERIC,
-   is_deleted VARCHAR(1000),
+   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+   deleted_at TIMESTAMP,
    CONSTRAINT PK_Users PRIMARY KEY (id)
 );
-INSERT INTO Users (id, login, password, age, is_deleted) VALUES ('qwerwk', 'Dave', '12wer123F', '35', 'false');
-INSERT INTO Users (id, login, password, age, is_deleted) VALUES ('asdfsdd', 'Karl', 'sd12wer123F', '75', 'false');
+INSERT INTO Users (id, login, password, age) VALUES ('qwerwk', 'Dave', '12wer123F', '35');
+INSERT INTO Users (id, login, password, age) VALUES ('asdfsdd', 'Karl', 'sd12wer123F', '75');
