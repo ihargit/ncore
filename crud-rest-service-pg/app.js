@@ -2,12 +2,10 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import createError from 'http-errors';
 import logger from 'morgan';
-import dotenv from 'dotenv';
 
 import indexRouter from './api/index';
 import usersRouter from './api/users';
 
-dotenv.config();
 const app = express();
 const { PORT, NODE_ENV } = process.env;
 

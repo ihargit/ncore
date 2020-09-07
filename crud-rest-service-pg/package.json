@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "lint": "eslint **/*.js",
-    "dev": "cross-env NODE_ENV=dev nodemon --exec babel-node app.js",
-    "start": "cross-env NODE_ENV=prod nodemon --exec babel-node app.js"
+    "dev": "cross-env NODE_ENV=dev  nodemon -r dotenv/config --exec babel-node app.js",
+    "start": "cross-env NODE_ENV=prod nodemon -r dotenv/config --exec babel-node app.js"
   },
   "keywords": [],
   "author": "",

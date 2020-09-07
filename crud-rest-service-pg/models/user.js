@@ -1,12 +1,9 @@
 import schema from './userSchema';
 const { Sequelize, DataTypes } = require('sequelize');
 const { POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, DB_HOST } = process.env;
-// const sequelize = new Sequelize(POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, {
-//     host: DB_HOST,
-//     dialect: 'postgres'
-const sequelize = new Sequelize(`postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${DB_HOST}/${POSTGRES_DB}`, {
+const sequelize = new Sequelize(POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD, {
+    host: DB_HOST,
     dialect: 'postgres'
-    // anything else you want to pass
 });
 
 const User = sequelize.define('User', {
@@ -26,10 +23,13 @@ const User = sequelize.define('User', {
     age: {
         type: DataTypes.NUMBER
     },
-    isDeleted: {
+    is_deleted: {
         type: DataTypes.STRING,
         allowNull: false
     }
+}, {
+    tableName: 'users',
+    timestamps: false
 });
 
 class UserModel {
@@ -45,12 +45,13 @@ class UserModel {
         }
     }
     async findById(userId) {
-        const userData =  await this.user.findAll({
+        return  await this.user.findAll({
+            attributes: ['id', 'login', 'password', 'age'],
             where: {
-                id: userId
+                id: userId,
+                is_deleted: 'false'
             }
         });
-        return Boolean(userData.isDeleted) ? null : userData;
     }
 
     async createUser(id, login, password, age, isDeleted) {
@@ -58,13 +59,13 @@ class UserModel {
         if (validationError) {
             return validationError;
         }
-        await this.user.define({
+        return await this.user.create({
             id,
             login,
             password,
             age,
-            isDeleted: String(isDeleted)
-        }).save();
+            is_deleted: String(isDeleted)
+        });
         return await this.findById(id);
     }
 
@@ -74,7 +75,7 @@ class UserModel {
             return validationError;
         }
         const theUser = this.findById(id);
-        if (!theUser || Boolean(theUser.isDeleted)) {
+        if (!theUser || Boolean(theUser.is_deleted)) {
             return null;
         }
         await this.user.update({ login, password, age }, {
@@ -86,14 +87,18 @@ class UserModel {
     }
 
     async getUsers() {
-        console.log(JSON.stringify(await this.user.findAll()));
-        return await this.user.findAll().filter(data => !Boolean(data.isDeleted));
+        return await this.user.findAll({
+            attributes: ['id', 'login', 'password', 'age'],
+            where: {
+                is_deleted: 'false'
+            }
+        });
     }
 
     async deleteUser(userId) {
         const theUser = this.findById(userId);
-        if (theUser && !Boolean(theUser.isDeleted)) {
-            await User.update({ isDeleted: 'true' }, {
+        if (theUser && !Boolean(theUser.is_deleted)) {
+            await User.update({ is_deleted: 'true' }, {
                 where: {
                     id: userId
                 }
