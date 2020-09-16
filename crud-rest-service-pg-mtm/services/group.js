@@ -5,7 +5,7 @@ export default class GroupService {
         this.groupModel = groupModel;
     }
     async getGroup(groupId) {
-        return await this.groupModel.findById(groupId);
+        return await this.groupModel.findByIdWithUsers(groupId);
     }
 
     async getGroups() {

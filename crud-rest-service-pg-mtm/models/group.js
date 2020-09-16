@@ -1,25 +1,5 @@
 import schema from './groupSchema';
-const { DataTypes } = require('sequelize');
 import sequelize from './db';
-
-const Group = sequelize.define('Group', {
-    id: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        primaryKey: true
-    },
-    name: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    permissions: {
-        type: DataTypes.ARRAY(DataTypes.STRING),
-        allowNull: false
-    }
-}, {
-    tableName: 'groups',
-    underscored: true
-});
 
 class GroupModel {
     constructor(group) {
@@ -36,6 +16,22 @@ class GroupModel {
     async findById(groupId) {
         return  await this.group.findAll({
             attributes: ['id', 'name', 'permissions'],
+            where: {
+                id: groupId
+            }
+        });
+    }
+
+    async findByIdWithUsers(groupId) {
+        return  await this.group.findAll({
+            attributes: ['id', 'name', 'permissions'],
+            include: [{
+                model: sequelize.models.User,
+                as: 'users',
+                required: false,
+                attributes: ['id', 'login'],
+                through: { attributes: [] }
+            }],
             where: {
                 id: groupId
             }
@@ -81,4 +77,4 @@ class GroupModel {
     }
 }
 
-export default new GroupModel(Group);
+export default new GroupModel(sequelize.models.Group);

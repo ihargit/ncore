@@ -1,29 +1,5 @@
 import schema from './userSchema';
-const { DataTypes } = require('sequelize');
 import sequelize from './db';
-
-const User = sequelize.define('User', {
-    id: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        primaryKey: true
-    },
-    login: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    password: {
-        type: DataTypes.STRING,
-        allowNull: false
-    },
-    age: {
-        type: DataTypes.NUMBER
-    }
-}, {
-    tableName: 'users',
-    underscored: true,
-    paranoid: true
-});
 
 class UserModel {
     constructor(user) {
@@ -37,9 +13,26 @@ class UserModel {
             return err;
         }
     }
+
     async findById(userId) {
         return  await this.user.findAll({
             attributes: ['id', 'login', 'password', 'age'],
+            where: {
+                id: userId
+            }
+        });
+    }
+
+    async findByIdWithGroups(userId) {
+        return  await this.user.findAll({
+            attributes: ['id', 'login', 'password', 'age'],
+            include: [{
+                model: sequelize.models.Group,
+                as: 'groups',
+                required: false,
+                attributes: ['id', 'name'],
+                through: { attributes: [] }
+            }],
             where: {
                 id: userId
             }
@@ -86,4 +79,4 @@ class UserModel {
     }
 }
 
-export default new UserModel(User);
+export default new UserModel(sequelize.models.User);
