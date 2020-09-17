@@ -57,7 +57,8 @@ sequelize.define('UserGroup', {
     }
 }, {
     tableName: 'user_group',
-    underscored: true
+    underscored: true,
+    timestamps: false
 });
 
 Group.belongsToMany(sequelize.models.User, {

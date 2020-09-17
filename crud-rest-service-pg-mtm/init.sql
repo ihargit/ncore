@@ -16,9 +16,9 @@ CREATE TABLE Groups (
    CONSTRAINT PK_Groups PRIMARY KEY (id)
 );
 CREATE TABLE User_Group (
-   user_id    VARCHAR(1000) REFERENCES Users (id) ON UPDATE CASCADE ON DELETE CASCADE,
    group_id     VARCHAR(1000) REFERENCES Groups (id) ON UPDATE CASCADE ON DELETE CASCADE,
-   CONSTRAINT PK_User_Group PRIMARY KEY (user_id, group_id)
+   user_id    VARCHAR(1000) REFERENCES Users (id) ON UPDATE CASCADE ON DELETE CASCADE,
+   CONSTRAINT PK_User_Group PRIMARY KEY (group_id, user_id)
 );
 INSERT INTO Users (id, login, password, age) VALUES ('qwerqer', 'Dave', '12wer123F', '35');
 INSERT INTO Users (id, login, password, age) VALUES ('asdfsdd', 'Karl', 'sd12wer123F', '75');
@@ -26,5 +26,5 @@ INSERT INTO Users (id, login, password, age) VALUES ('asdfsdd', 'Karl', 'sd12wer
 INSERT INTO Groups (id, name, permissions) VALUES ('zxcvzxc', 'group_one', '{read, write}');
 INSERT INTO Groups (id, name, permissions) VALUES ('dfgdfgh', 'group_two', '{read}');
 
-INSERT INTO User_Group (user_id, group_id) VALUES ('qwerqer', 'zxcvzxc');
-INSERT INTO User_Group (user_id, group_id) VALUES ('asdfsdd', 'dfgdfgh');
+INSERT INTO User_Group (group_id, user_id) VALUES ('zxcvzxc', 'qwerqer');
+INSERT INTO User_Group (group_id, user_id) VALUES ('dfgdfgh', 'asdfsdd');

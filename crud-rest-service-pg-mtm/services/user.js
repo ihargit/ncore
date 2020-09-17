@@ -31,14 +31,4 @@ export default class UserService {
             .sort((a, b) => a.login - b.login)
             .slice(0, limit);
     }
-
-    // async addUsersToGroup(groupId, userIds) {
-    //     // TODO check if group exists
-    //     // TODO check if all users exist
-    //     // add users
-    //     return (await this.userModel.getUsers())
-    //         .filter(({ login }) => login && login.includes(loginSubstring))
-    //         .sort((a, b) => a.login - b.login)
-    //         .slice(0, limit);
-    // }
 }

@@ -6,23 +6,25 @@ class UserGroupModel {
         this.userGroup = userGroup;
     }
 
-    async reportInvalidData(group_id, user_id) {
+    async addUsersToGroup(group_id, user_ids) {
         try {
-            await schema.validateAsync({ group_id, user_id });
-        } catch (err) {
-            return err;
+            return await sequelize.transaction(async (t) => {
+                for (const user_id of user_ids) {
+                    await schema.validateAsync({ group_id, user_id });
+                    await this.userGroup.create({
+                        group_id,
+                        user_id
+                    }, {
+                        fields: ['group_id', 'user_id'],
+                        returning: ['group_id', 'user_id'],
+                        transaction: t
+                    });
+                }
+                return group_id;
+            });
+        } catch (error) {
+            return error;
         }
-    }
-
-    async createUserGroup(group_id, user_id) {
-        const validationError = await this.reportInvalidData(...arguments);
-        if (validationError) {
-            return validationError;
-        }
-        return await this.userGroup.create({
-            group_id,
-            user_id
-        });
     }
 }
 

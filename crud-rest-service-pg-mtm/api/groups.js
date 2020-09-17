@@ -1,9 +1,12 @@
 import express from 'express';
 const router = express.Router();
 import GroupService from '../services/group';
+import UserGroupService from '../services/userGroup';
 import groupModel from '../models/group';
+import userGroupModel from '../models/userGroup';
 import createError from 'http-errors';
 const groupService = new GroupService(groupModel);
+const userGroupService = new UserGroupService(userGroupModel);
 
 router.route('/')
     .get(async (req, res, next) => {
@@ -11,6 +14,29 @@ router.route('/')
         return groupsData
             ? res.json(groupsData)
             : next(createError(404, 'No user groups found'));
+    })
+    .post(async (req, res, next) => {
+        const { action } = req.query;
+        if (!action && action !== 'add-users') {
+            return next();
+        }
+        const groupIdOrError = await userGroupService.addUsersToGroup(req.body);
+        if (groupIdOrError instanceof Error) {
+            const { message, name } = groupIdOrError;
+            let errorMessage = message;
+            if (name === 'SequelizeForeignKeyConstraintError') {
+                errorMessage = 'Error: no group or user(s) with such id(s)';
+            }
+            if (name === 'SequelizeUniqueConstraintError') {
+                errorMessage = 'Error: some group/user pair(s) already exist (duplicates)';
+            }
+            return next(createError(400, errorMessage));
+        }
+        const groupData = await groupService.getGroup(groupIdOrError);
+        // return group with all users matched
+        return groupData
+            ? res.json(groupData)
+            : next(createError(404, `Group with id ${groupIdOrError} not found`));
     })
     .post(async (req, res, next) => {
         const groupData = await groupService.createGroup(req.body);
