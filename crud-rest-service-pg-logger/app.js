@@ -10,7 +10,7 @@ import groupsRouter from './api/groups';
 const app = express();
 const { PORT, NODE_ENV } = process.env;
 
-app.use(logger('dev'));
+app.use(logger(NODE_ENV === 'prod' ? 'tiny' : 'dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
