@@ -7,14 +7,24 @@ export default function getMethodProxy(obj) {
             if (typeof propValue !== 'function') {
                 return propValue;
             }
-            return function helper() {
+            return async function helper() {
                 const funcArgs = Object.values(arguments);
                 const logMessage = [
                     `${chalk.green('Method:')} ${propKey}`,
                     funcArgs.length ? `${chalk.green('arguments:')} ${funcArgs.join(', ')}` : ''
                 ].join(', ');
                 console.log(logMessage);
-                return propValue.apply(this, arguments);
+                try {
+                    return await propValue.bind(this, arguments);
+                } catch (e) {
+                    const errorMessage = [
+                        `${chalk.red('Method:')} ${propKey}`,
+                        funcArgs.length ? `${chalk.red('arguments:')} ${funcArgs.join(', ')}` : '',
+                        `${chalk.red('Error message:')} ${e.message}`
+                    ].join(', ');
+                    console.log(errorMessage);
+                    throw e;
+                }
             };
         }
     };
