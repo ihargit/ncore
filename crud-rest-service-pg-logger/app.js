@@ -1,14 +1,8 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import createError from 'http-errors';
-import winston from 'winston';
+import logger from './utils/logger';
 import requestLogger from './utils/requestLogger';
-const logger = winston.createLogger({
-    transports: [
-        new winston.transports.Console(),
-        new winston.transports.File({ filename: 'combined.log' })
-    ]
-});
 
 import indexRouter from './api/index';
 import usersRouter from './api/users';
@@ -38,6 +32,7 @@ app.use((err, req, res, next) => {
     }
     res.status(err.status || 500);
     const { message, status, stack } = err;
+    logger.error(message);
     res.json({ message, status, stack: NODE_ENV === 'dev' ? stack : undefined });
 });
 

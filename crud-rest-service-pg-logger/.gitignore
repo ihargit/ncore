@@ -2,3 +2,4 @@ node_modules
 /docker-compose.yml
 /.env
 /combined.log
+error.log
