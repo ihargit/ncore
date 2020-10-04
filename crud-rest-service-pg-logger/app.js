@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import createError from 'http-errors';
 import logger from 'morgan';
+import requestLogger from './utils/requestLogger';
 
 import indexRouter from './api/index';
 import usersRouter from './api/users';
@@ -9,12 +10,16 @@ import groupsRouter from './api/groups';
 
 const app = express();
 const { PORT, NODE_ENV } = process.env;
+const inProduction = NODE_ENV === 'prod';
 
 app.use(logger(NODE_ENV === 'prod' ? 'tiny' : 'dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+if (!inProduction) {
+    app.use('*', requestLogger);
+}
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/groups', groupsRouter);
