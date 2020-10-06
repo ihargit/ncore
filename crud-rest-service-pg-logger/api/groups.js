@@ -5,8 +5,11 @@ import UserGroupService from '../services/userGroup';
 import groupModel from '../models/group';
 import userGroupModel from '../models/userGroup';
 import createError from 'http-errors';
-const groupService = new GroupService(groupModel);
-const userGroupService = new UserGroupService(userGroupModel);
+import logMethodInfoProxy from '../utils/methodProxy';
+const groupServiceInstance = new GroupService(groupModel);
+const userGroupServiceInstance = new UserGroupService(userGroupModel);
+const groupService = logMethodInfoProxy(groupServiceInstance);
+const userGroupService = logMethodInfoProxy(userGroupServiceInstance);
 
 router.route('/')
     .get(async (req, res, next) => {

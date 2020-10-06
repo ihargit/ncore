@@ -3,7 +3,9 @@ const router = express.Router();
 import UserService from '../services/user';
 import userModel from '../models/user';
 import createError from 'http-errors';
-const userService = new UserService(userModel);
+import logMethodInfoProxy from '../utils/methodProxy';
+const userServiceInstance = new UserService(userModel);
+const userService  = logMethodInfoProxy(userServiceInstance);
 
 router.route('/')
     .get(async (req, res, next) => {
@@ -18,7 +20,6 @@ router.route('/')
     })
     .get(async (req, res, next) => {
         const usersData = await userService.getUsers();
-        console.log(usersData);
         return usersData
             ? res.json(usersData)
             : next(createError(404, 'No users found'));
