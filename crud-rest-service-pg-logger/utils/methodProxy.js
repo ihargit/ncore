@@ -12,16 +12,17 @@ export default function getMethodProxy(obj) {
                 const logMessage = [
                     `${chalk.green('Method:')} ${propKey}`,
                     funcArgs.length ? `${chalk.green('arguments:')} ${funcArgs.join(', ')}` : ''
-                ].join(', ');
+                ].filter(value => !!value).join(', ');
                 console.log(logMessage);
+                console.log('arguments: ', arguments);
                 try {
-                    return await propValue.bind(this, arguments);
+                    return await propValue.call(this, ...arguments);
                 } catch (e) {
                     const errorMessage = [
                         `${chalk.red('Method:')} ${propKey}`,
                         funcArgs.length ? `${chalk.red('arguments:')} ${funcArgs.join(', ')}` : '',
                         `${chalk.red('Error message:')} ${e.message}`
-                    ].join(', ');
+                    ].filter(value => !!value).join(', ');
                     console.log(errorMessage);
                     throw e;
                 }

@@ -7,6 +7,7 @@ import requestLogger from './utils/requestLogger';
 import indexRouter from './api/index';
 import usersRouter from './api/users';
 import groupsRouter from './api/groups';
+import loginRouter from './api/login';
 
 const app = express();
 const { PORT, NODE_ENV } = process.env;
@@ -21,6 +22,7 @@ if (!inProduction) {
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/groups', groupsRouter);
+app.use('/login', loginRouter);
 
 app.use((req, res, next) => {
     next(createError(404));
