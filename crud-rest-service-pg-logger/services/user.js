@@ -25,6 +25,10 @@ export default class UserService {
         return await this.userModel.deleteUser(id);
     }
 
+    async getUserByCredentials(login, password) {
+        return (await this.userModel.getUserByCredentials(login, password))[0];
+    }
+
     async getAutoSuggestUsers(loginSubstring, limit) {
         return (await this.userModel.getUsers())
             .filter(({ login }) => login && login.includes(loginSubstring))

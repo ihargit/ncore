@@ -3,6 +3,7 @@ import cookieParser from 'cookie-parser';
 import createError from 'http-errors';
 import logger from './utils/logger';
 import requestLogger from './utils/requestLogger';
+import authenticateToken from './utils/authenticate';
 
 import indexRouter from './api/index';
 import usersRouter from './api/users';
@@ -19,10 +20,12 @@ app.use(cookieParser());
 if (!inProduction) {
     app.use('*', requestLogger);
 }
+
+app.use('/login', loginRouter);
+app.use(authenticateToken);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/groups', groupsRouter);
-app.use('/login', loginRouter);
 
 app.use((req, res, next) => {
     next(createError(404));
