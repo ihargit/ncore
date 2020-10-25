@@ -1,12 +1,15 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import createError from 'http-errors';
+import cors from 'cors';
 import logger from './utils/logger';
 import requestLogger from './utils/requestLogger';
+import authenticateToken from './utils/authenticate';
 
 import indexRouter from './api/index';
 import usersRouter from './api/users';
 import groupsRouter from './api/groups';
+import loginRouter from './api/login';
 
 const app = express();
 const { PORT, NODE_ENV } = process.env;
@@ -18,6 +21,13 @@ app.use(cookieParser());
 if (!inProduction) {
     app.use('*', requestLogger);
 }
+
+app.use('/login', loginRouter);
+app.use(authenticateToken);
+app.use(cors({
+    origin: 'http://exemple.com',
+    optionsSuccessStatus: 200
+}));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/groups', groupsRouter);

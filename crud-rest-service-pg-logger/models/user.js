@@ -39,6 +39,16 @@ class UserModel {
         });
     }
 
+    async getUserByCredentials(login, password) {
+        return  await this.user.findAll({
+            attributes: ['id', 'login', 'password'],
+            where: {
+                login,
+                password
+            }
+        });
+    }
+
     async createUser(id, login, password, age) {
         const validationError = await this.reportInvalidData(...arguments);
         if (validationError) {
